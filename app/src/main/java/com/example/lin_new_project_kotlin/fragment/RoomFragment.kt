@@ -10,19 +10,19 @@ import com.example.lin_new_project_kotlin.databinding.FragmentRoomBinding
 import com.example.lin_new_project_kotlin.`fun`.CommonUtils
 import com.example.lin_new_project_kotlin.`fun`.RecyclerViewMethed
 import com.example.lin_new_project_kotlin.room.DatabaseCallback
+import com.example.lin_new_project_kotlin.room.data.FavoritesData
 import com.example.lin_new_project_kotlin.room.data.HistoryData
 import com.example.lin_new_project_kotlin.room.data.UserData
-
 import com.example.lin_new_project_kotlin.room.entity.FavoritesEntity
 import com.example.lin_new_project_kotlin.room.entity.HistoryEntity
 import com.example.lin_new_project_kotlin.room.entity.UserProfileEntity
 import com.example.lin_new_project_kotlin.viewBinding.BaseBindingFragment
 import com.google.gson.Gson
 
-
 class RoomFragment : BaseBindingFragment<FragmentRoomBinding?>() {
     private var userProfileEntity: UserProfileEntity? = null
     private var userAdapter: UserAdapter? = null
+
     override fun onCreateViewBinding(layoutInflater: LayoutInflater): FragmentRoomBinding {
         return FragmentRoomBinding.inflate(layoutInflater)
     }
@@ -30,125 +30,199 @@ class RoomFragment : BaseBindingFragment<FragmentRoomBinding?>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        getUserProfileEntityALL()
     }
 
     private fun initView() {
         RecyclerViewMethed.init_VERTICAL(
-            getActivity(), getBinding()!!.recyclerView,
+            activity, getBinding()?.recyclerView,
             true, 0, CommonUtils.getColorByVERSION(R.color.white),
             true, true
         )
-        userAdapter = UserAdapter(getContext(), ArrayList())
-        userAdapter!!.setOnItemClickListener(object:UserAdapter.OnItemClickListener{
+        userAdapter = UserAdapter(context, ArrayList())
+        userAdapter?.setOnItemClickListener(object : UserAdapter.OnItemClickListener {
             override fun OnItemClick(userProfile: UserProfileEntity?) {
                 userProfileEntity = userProfile
-                getBinding()!!.btnDelete.setVisibility(View.VISIBLE)
-                getBinding()!!.tvUser.setVisibility(View.VISIBLE)
-                //            getBinding().btnInsertFavorites.setVisibility(VISIBLE);
-//            getBinding().btnInsertHistory.setVisibility(VISIBLE);
-                getBinding()!!.recyclerView.setVisibility(View.INVISIBLE)
-                getBinding()!!.tvUser.setText(Gson().toJson(userProfileEntity))
+                getBinding()?.apply {
+                    btnDelete.visibility = View.VISIBLE
+                    btnInsertFavorites.visibility = View.VISIBLE
+                    btnInsertHistory.visibility = View.VISIBLE
+                    tvUser.visibility = View.VISIBLE
+                    tvUser.text = "已選中 ID:${userProfileEntity?.uid} -> ${Gson().toJson(userProfileEntity)}"
+                    recyclerView.visibility = View.VISIBLE
+                }
             }
         })
-        getBinding()!!.recyclerView.setAdapter(userAdapter)
-        getBinding()!!.btnInsert.setOnClickListener { v_: View? -> insertUserProfileEntity() }
-        getBinding()!!.btnQuery.setOnClickListener { v: View? -> getUserProfileEntityALL() }
-        getBinding()!!.btnDelete.setOnClickListener { v: View? -> deleteUserProfile() }
-        getBinding()!!.btnClearTable.setOnClickListener { v: View? -> clearTable() }
-        getBinding()!!.btnInsertFavorites.setOnClickListener { v: View? -> insertFavoritesEntity() }
-        getBinding()!!.btnInsertHistory.setOnClickListener { v: View? -> insertHistoryEntity() }
+        getBinding()?.recyclerView?.adapter = userAdapter
+        getBinding()?.btnInsert?.setOnClickListener { insertUserProfileEntity() }
+        getBinding()?.btnQuery?.setOnClickListener { getUserProfileEntityALL() }
+        getBinding()?.btnDelete?.setOnClickListener { deleteUserProfile() }
+        getBinding()?.btnClearTable?.setOnClickListener { clearTable() }
+        getBinding()?.btnInsertFavorites?.setOnClickListener { insertFavoritesEntity() }
+        getBinding()?.btnInsertHistory?.setOnClickListener { insertHistoryEntity() }
     }
 
-
     private fun insertUserProfileEntity() {
-        val userProfileEntity = UserProfileEntity()
+        val entity = UserProfileEntity()
         val userData = UserData()
-        userData.userName = "AAA"
-        userData.userType = 0
-        userData.imageName="aasd"
-        userProfileEntity.userData=userData
-       mDatabaseManager().insertUserProfileEntity(
-            userProfileEntity,
+        val randomNum = (100..999).random()
+        userData.userName = "User_$randomNum"
+        userData.userType = (0..2).random()
+        userData.imageName = "img_$randomNum"
+        entity.userData = userData
+        mDatabaseManager().insertUserProfileEntity(
+            entity,
             object : DatabaseCallback<UserProfileEntity?>() {
                 override fun onAdded(rowId: Long) {
                     super.onAdded(rowId)
-                    //                uid = (int) rowId;//rowId不一定是UID
-                    setLog("新增使用者資料,onAdded,rowId:" + rowId)
+                    setLog("新增使用者資料,onAdded,rowId:$rowId")
+                    showToast("新增使用者成功 (ID: $rowId)")
+                    getUserProfileEntityALL()
+                }
+
+                override fun onError(e: String?) {
+                    super.onError(e)
+                    setLog("insertUserProfileEntity onError: $e")
+                    showToast("新增失敗: $e")
                 }
             })
     }
+
     private fun getUserProfileEntityALL() {
         mDatabaseManager().getUserProfilesALL(object : DatabaseCallback<UserProfileEntity?>() {
-             override fun onDataLoadedList(lists: MutableList<UserProfileEntity?>?) {
+            override fun onDataLoadedList(lists: MutableList<UserProfileEntity?>?) {
                 super.onDataLoadedList(lists)
-                setLog("讀取UserProfileEntityALL,onDataLoadedList,size:" + lists?.size)
-                for (i in lists!!.indices) {
-                    val userProfile = lists?.get(i)
-                    setLog("使用者資料:" + Gson().toJson(userProfile))
+                val count = lists?.size ?: 0
+                setLog("讀取UserProfileEntityALL,onDataLoadedList,size:$count")
+                if (lists != null) {
+                    for (i in lists.indices) {
+                        val userProfile = lists[i]
+                        setLog("使用者資料:" + Gson().toJson(userProfile))
+                    }
+                    userAdapter?.setArray(lists)
+                } else {
+                    userAdapter?.setArray(ArrayList())
                 }
-                getBinding()!!.recyclerView.setVisibility(View.VISIBLE)
-                userAdapter!!.setArray(lists)
+                getBinding()?.recyclerView?.visibility = View.VISIBLE
+                showToast("查詢完成，共 $count 筆資料")
             }
 
-             override fun onError(e: String?) {
+            override fun onError(e: String?) {
                 super.onError(e)
-                setLog("onError" + e)
+                setLog("getUserProfileEntityALL onError: $e")
+                showToast("查詢失敗: $e")
             }
         })
     }
 
-
     private fun deleteUserProfile() {
-        if (userProfileEntity == null) return
-       mDatabaseManager()
-            .deleteUserProfile(userProfileEntity, object : DatabaseCallback<UserProfileEntity?>() {
-                override fun onDeleted() {
-                    super.onDeleted()
-                    getBinding()!!.btnDelete.setVisibility(View.INVISIBLE)
-                    getBinding()!!.tvUser.setVisibility(View.INVISIBLE)
-
-                    //                getBinding().btnInsertFavorites.setVisibility(INVISIBLE);
-                    setLog("onDeleted")
+        val target = userProfileEntity ?: run {
+            showToast("請先點選欲刪除之使用者")
+            return
+        }
+        mDatabaseManager().deleteUserProfile(target, object : DatabaseCallback<UserProfileEntity?>() {
+            override fun onDeleted() {
+                super.onDeleted()
+                userProfileEntity = null
+                getBinding()?.apply {
+                    btnDelete.visibility = View.GONE
+                    btnInsertFavorites.visibility = View.GONE
+                    btnInsertHistory.visibility = View.GONE
+                    tvUser.visibility = View.GONE
+                    tvUser.text = ""
                 }
-            })
+                setLog("onDeleted")
+                showToast("刪除成功")
+                getUserProfileEntityALL()
+            }
+
+            override fun onError(e: String?) {
+                super.onError(e)
+                setLog("deleteUserProfile onError: $e")
+                showToast("刪除失敗: $e")
+            }
+        })
     }
 
     private fun insertHistoryEntity() {
-        if (userProfileEntity == null) return
+        val user = userProfileEntity ?: run {
+            showToast("請先點選使用者")
+            return
+        }
         val historyEntity = HistoryEntity()
-        historyEntity.historyParentUid = userProfileEntity!!.uid
+        historyEntity.historyParentUid = user.uid
         val historyData = HistoryData()
-        historyData.historyName = "HHH"
-        historyData.programId=2026
+        historyData.historyName = "History_${System.currentTimeMillis() % 1000}"
+        historyData.programId = 2026
         historyEntity.historyData = historyData
-        mDatabaseManager()
-            .insertHistoryEntity(historyEntity, object : DatabaseCallback<HistoryEntity?>() {
-                override fun onAdded(rowId: Long) {
-                    super.onAdded(rowId)
-                    setLog("新增歷史紀錄,onAdded,rowId:" + rowId)
-                }
-            })
+        mDatabaseManager().insertHistoryEntity(historyEntity, object : DatabaseCallback<HistoryEntity?>() {
+            override fun onAdded(rowId: Long) {
+                super.onAdded(rowId)
+                setLog("新增歷史紀錄,onAdded,rowId:$rowId")
+                showToast("新增歷史紀錄成功")
+            }
+
+            override fun onError(e: String?) {
+                super.onError(e)
+                setLog("insertHistoryEntity onError: $e")
+                showToast("新增歷史紀錄失敗: $e")
+            }
+        })
     }
 
     private fun insertFavoritesEntity() {
-        if (userProfileEntity == null) return
+        val user = userProfileEntity ?: run {
+            showToast("請先點選使用者")
+            return
+        }
         val favoritesEntity = FavoritesEntity()
-        favoritesEntity.favoriteParentUid = userProfileEntity!!.uid
-        mDatabaseManager()
-            .insertFavoritesEntity(favoritesEntity, object : DatabaseCallback<FavoritesEntity?>() {
-                override fun onAdded(rowId: Long) {
-                    super.onAdded(rowId)
-                    setLog("新增我的最愛,onAdded,rowId:" + rowId)
-                }
-            })
+        favoritesEntity.favoriteParentUid = user.uid
+        favoritesEntity.favoriteName = "Fav_${user.uid}"
+        favoritesEntity.favoriteType = (1..100).random()
+        val favoritesData = FavoritesData()
+        favoritesData.test = "Favorite for User ${user.uid}"
+        favoritesEntity.favoritesData = favoritesData
+        mDatabaseManager().insertFavoritesEntity(favoritesEntity, object : DatabaseCallback<FavoritesEntity?>() {
+            override fun onAdded(rowId: Long) {
+                super.onAdded(rowId)
+                setLog("新增我的最愛,onAdded,rowId:$rowId")
+                showToast("新增我的最愛成功")
+            }
+
+            override fun onError(e: String?) {
+                super.onError(e)
+                setLog("insertFavoritesEntity onError: $e")
+                showToast("新增我的最愛失敗: $e")
+            }
+        })
     }
 
     private fun clearTable() {
         mDatabaseManager().clearTable(object : DatabaseCallback<Any?>() {
             override fun onDeleted() {
                 userProfileEntity = null
+                getBinding()?.apply {
+                    btnDelete.visibility = View.GONE
+                    btnInsertFavorites.visibility = View.GONE
+                    btnInsertHistory.visibility = View.GONE
+                    tvUser.visibility = View.GONE
+                    tvUser.text = ""
+                }
+                userAdapter?.setArray(ArrayList())
                 setLog("清空資料庫資料,onDeleted:清空完成")
+                showToast("清空資料庫完成")
+            }
+
+            override fun onError(e: String?) {
+                super.onError(e)
+                setLog("clearTable onError: $e")
+                showToast("清空失敗: $e")
             }
         })
+    }
+
+    override fun onDestroyView() {
+        mDatabaseManager().roomClear()
+        super.onDestroyView()
     }
 }

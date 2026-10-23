@@ -35,8 +35,8 @@ class DatabaseManager(context: Context) {
 
     fun clearTable(databaseCallback: DatabaseCallback<*>) {
         Completable.fromAction(Action { db.clearAllTables() })
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : CompletableObserver {
                 override fun onSubscribe(d: Disposable) {
                     compositeDisposable.add(d)
@@ -76,9 +76,15 @@ class DatabaseManager(context: Context) {
             .doOnError(Consumer { throwable: Throwable? ->
                 Log.d(TAG, "Throwable" + throwable!!.message)
             })
-            .subscribe(Consumer { lists: MutableList<UserProfileEntity?>? ->
-                databaseCallback.onDataLoadedList(lists)
-            })
+            .subscribe(
+                Consumer { lists: MutableList<UserProfileEntity?>? ->
+                    databaseCallback.onDataLoadedList(lists)
+                },
+                Consumer { throwable: Throwable ->
+                    Log.e(TAG, "getUserProfilesALL error: " + throwable.message)
+                    databaseCallback.onError(throwable.message)
+                }
+            )
 
         compositeDisposable.add(d)
     }
@@ -92,23 +98,23 @@ class DatabaseManager(context: Context) {
             .doOnError(Consumer { throwable: Throwable? ->
                 Log.d(TAG, "Throwable" + throwable!!.message)
             })
-            .subscribe(Consumer { testEntity: UserProfileEntity? ->
-                databaseCallback.onDataLoadedList(
-                    testEntity
-                )
-            })
+            .subscribe(
+                Consumer { testEntity: UserProfileEntity? ->
+                    databaseCallback.onDataLoadedList(
+                        testEntity
+                    )
+                },
+                Consumer { throwable: Throwable ->
+                    Log.e(TAG, "getUserProfiles error: " + throwable.message)
+                    databaseCallback.onError(throwable.message)
+                }
+            )
         compositeDisposable.add(d)
     }
 
     fun insertUserProfileEntity(
         userProfileEntity: UserProfileEntity?,
         databaseCallback: DatabaseCallback<UserProfileEntity?>) {
-        //這裡使用Completable是因為數據庫處理完後不發射數據，只處理onComplete和onError事件
-        //Completable
-        //適合用在執行的內容沒有回傳值，只要知道成功或失敗就好的時候，
-        //例如更新個人資料。在callback有onComplete()和onError(Throwable e)兩個方法，
-        //其中onComplete()是沒有參數的表示執行完不會有回傳值。
-        //建立我們要執行的內容。
         val rowId = AtomicLong()
         Completable
             .fromAction(Action {
@@ -116,8 +122,8 @@ class DatabaseManager(context: Context) {
                     db.dbDao()!!.insertUserProfileEntity(userProfileEntity)
                 )
             })
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : CompletableObserver {
                 override fun onSubscribe(d: Disposable) {
                     compositeDisposable.add(d)
