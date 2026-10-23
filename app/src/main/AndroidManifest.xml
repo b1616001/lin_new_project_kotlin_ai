@@ -62,7 +62,7 @@
         </intent>
     </queries>
     <application
-        android:name="com.example.lin_new_project_kotlin_ai.MyApplication"
+        android:name="com.example.lin_new_project_kotlin.MyApplication"
         android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
@@ -89,7 +89,7 @@
         </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.lin_new_project_kotlin_ai.myfileprovider"
+            android:authorities="com.example.lin_new_project_kotlin.myfileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
