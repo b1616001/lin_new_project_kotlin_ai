@@ -7,10 +7,10 @@
   >
 
 
-    <com.example.lin_new_project_kotlin.view.TimeView
+    <com.example.lin_new_project_kotlin_ai.view.TimeView
         android:id="@+id/timeView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-    </com.example.lin_new_project_kotlin.view.TimeView>
+    </com.example.lin_new_project_kotlin_ai.view.TimeView>
 </androidx.constraintlayout.widget.ConstraintLayout>

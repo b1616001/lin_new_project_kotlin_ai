@@ -42,9 +42,11 @@ class UserAdapter(
             //            getBindingAdapterPosition() 得到的是元素位於當前綁定Adapter的位置，
 //            而getAbsoluteAdapterPosition()方法得到的是元素位於合併後Adapter的絕對位置。
             binding.getRoot().setOnClickListener(View.OnClickListener { v: View? ->
-                if (onItemClickListener != null) {
-                    if (getAdapterPosition() >= RecyclerView.NO_POSITION) {
-                        onItemClickListener!!.OnItemClick(array.get(getAdapterPosition()))
+                val listener = onItemClickListener
+                if (listener != null) {
+                    val pos = adapterPosition
+                    if (pos != RecyclerView.NO_POSITION && pos >= 0 && pos < array.size) {
+                        listener.OnItemClick(array[pos])
                     }
                 }
             })

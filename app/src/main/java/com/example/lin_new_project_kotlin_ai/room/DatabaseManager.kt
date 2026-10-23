@@ -1,11 +1,11 @@
-package com.example.lin_new_project_kotlin.room
+package com.example.lin_new_project_kotlin_ai.room
 
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
-import com.example.lin_new_project_kotlin.room.entity.FavoritesEntity
-import com.example.lin_new_project_kotlin.room.entity.HistoryEntity
-import com.example.lin_new_project_kotlin.room.entity.UserProfileEntity
+import com.example.lin_new_project_kotlin_ai.room.entity.FavoritesEntity
+import com.example.lin_new_project_kotlin_ai.room.entity.HistoryEntity
+import com.example.lin_new_project_kotlin_ai.room.entity.UserProfileEntity
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -74,11 +74,19 @@ class DatabaseManager(context: Context) {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError(Consumer { throwable: Throwable? ->
-                Log.d(TAG, "Throwable" + throwable!!.message)
+                Log.d(TAG, "Throwable " + throwable?.message)
             })
-            .subscribe(Consumer { lists: MutableList<UserProfileEntity?>? ->
-                databaseCallback.onDataLoadedList(lists)
-            })
+            .subscribe(
+                Consumer { lists: MutableList<UserProfileEntity?>? ->
+                    databaseCallback.onDataLoadedList(lists ?: ArrayList())
+                },
+                Consumer { throwable: Throwable ->
+                    databaseCallback.onError(throwable.message)
+                },
+                Action {
+                    databaseCallback.onDataLoadedList(ArrayList())
+                }
+            )
 
         compositeDisposable.add(d)
     }

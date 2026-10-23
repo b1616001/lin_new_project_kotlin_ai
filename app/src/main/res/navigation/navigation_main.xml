@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.HomeFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.HomeFragment"
         android:label="HomeFragment" >
 
         <action
@@ -122,90 +122,90 @@
     </fragment>
     <fragment
         android:id="@+id/textFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.TextFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.TextFragment"
         android:label="TextFragment" />
     <fragment
         android:id="@+id/roomFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.RoomFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.RoomFragment"
         android:label="RoomFragment" />
     <fragment
         android:id="@+id/languageFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.LanguageFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.LanguageFragment"
         android:label="LanguageFragment" />
     <fragment
         android:id="@+id/ttsFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.TtsFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.TtsFragment"
         android:label="TtsFragment" />
     <fragment
         android:id="@+id/signatureFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.SignatureFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.SignatureFragment"
         android:label="SignatureFragment" />
     <fragment
         android:id="@+id/timeFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.TimeFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.TimeFragment"
         android:label="TimeFragment" />
     <fragment
         android:id="@+id/MPAndroidChartFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.MPAndroidChartFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.MPAndroidChartFragment"
         android:label="MPAndroidChartFragment" />
     <fragment
         android:id="@+id/viewPagerFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.ViewPagerFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.ViewPagerFragment"
         android:label="ViewPagerFragment" />
     <fragment
         android:id="@+id/recordingFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.RecordingFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.RecordingFragment"
         android:label="RecordingFragment" />
     <fragment
         android:id="@+id/nfcFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.NfcFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.NfcFragment"
         android:label="NfcFragment" />
     <fragment
         android:id="@+id/simpleItemFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.SimpleItemFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.SimpleItemFragment"
         android:label="SimpleItemFragment" />
     <fragment
         android:id="@+id/textUrlFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.TextUrlFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.TextUrlFragment"
         android:label="TextUrlFragment" />
     <fragment
         android:id="@+id/zbarFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.ZbarFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.ZbarFragment"
         android:label="ZbarFragment" />
     <fragment
         android:id="@+id/notebookFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.NotebookFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.NotebookFragment"
         android:label="NotebookFragment" />
     <fragment
         android:id="@+id/qrcodeFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.QrcodeFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.QrcodeFragment"
         android:label="QrcodeFragment" />
     <fragment
         android:id="@+id/volumetFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.VolumetFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.VolumetFragment"
         android:label="VolumetFragment" />
     <fragment
         android:id="@+id/screenFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.ScreenFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.ScreenFragment"
         android:label="ScreenFragment" />
     <fragment
         android:id="@+id/gifFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.GifFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.GifFragment"
         android:label="GifFragment" />
     <fragment
         android:id="@+id/webViewFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.WebViewFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.WebViewFragment"
         android:label="WebViewFragment" />
     <fragment
         android:id="@+id/GLSurfaceFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.GLSurfaceFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.GLSurfaceFragment"
         android:label="GLSurfaceFragment" />
     <fragment
         android:id="@+id/publicSpaceFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.PublicSpaceFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.PublicSpaceFragment"
         android:label="PublicSpaceFragment" />
     <fragment
         android:id="@+id/scaleImageFragment"
-        android:name="com.example.lin_new_project_kotlin.fragment.ScaleImageFragment"
+        android:name="com.example.lin_new_project_kotlin_ai.fragment.ScaleImageFragment"
         android:label="ScaleImageFragment" />
 </navigation>
